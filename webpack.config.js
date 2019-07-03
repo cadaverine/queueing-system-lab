@@ -10,12 +10,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Queuing system'
     }),
-    new CopyPlugin([
-      { from: 'src/assets', to: 'assets' },
-    ])
+    new CopyPlugin([{
+      from: 'src/assets',
+      to: 'assets'
+    }]),
   ],
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'dist')
-  }
+    path: path.resolve(__dirname, 'dist'),
+  },
 };
