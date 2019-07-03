@@ -40,6 +40,10 @@ export default class Request extends Graphics {
     parent.addChild(this);
   }
 
+  prependTo(parent) {
+    parent.addChildAt(this, 0);
+  }
+
   clear() {
     this.destroy();
   }
