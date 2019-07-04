@@ -1,5 +1,5 @@
 import { Graphics, Text } from 'pixi.js';
-
+import { DropShadowFilter } from '@pixi/filter-drop-shadow';
 
 let requestsNumber = 0;
 const allowedTypes = ['XCHG', 'CARD', 'CRED', 'ACNT'];
@@ -88,5 +88,7 @@ export default class Request extends Graphics {
 
     this.x = x;
     this.y = y;
+
+    this.filters = [new DropShadowFilter()];
   }
 }
