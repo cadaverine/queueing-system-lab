@@ -15,6 +15,9 @@ module.exports = {
       to: 'assets'
     }]),
   ],
+  devServer: {
+    open: true,
+  },
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
