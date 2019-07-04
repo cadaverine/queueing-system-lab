@@ -20,6 +20,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "pixi-filters": "^3.0.3",
     "pixi.js": "^5.0.4"
   }
 }
