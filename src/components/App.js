@@ -6,8 +6,8 @@ import { Application } from 'pixi.js';
 export default class App {
   constructor(parent) {
     this.app = new Application({
-      width: 1600,
-      height: 900,
+      width: 1200,
+      height: 600,
       antialiasing: true,
       transparent: true,
       resolution: 1
@@ -26,7 +26,7 @@ export default class App {
   setup() {
     this.requests = range(0, 10).map(i => new Request({
       x: 400 + 25 * i,
-      y: 400,
+      y: 260,
       type: getRandomRequestType(),
     }))
 
@@ -64,7 +64,7 @@ export default class App {
   createRequest(requestType) {
     const type = requestType != null ? requestType : getRandomRequestType();
 
-    return new Request({ x: 400, y: 400, type });
+    return new Request({ x: 400, y: 260, type });
   }
 
   addRequestToQueue(request) {
