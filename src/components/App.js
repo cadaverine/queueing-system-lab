@@ -24,7 +24,7 @@ export default class App {
 
   setup() {
     this.requests = range(0, 10).map(i => new Request({
-      x: 400 + 25 * i,
+      x: 400 + 15 * i,
       y: 260,
       type: getRandomType(Request.types),
     }))
@@ -67,13 +67,9 @@ export default class App {
   }
 
   addRequestToQueue(request) {
-    if (this.currentRequest != null) {
-      this.currentRequest.x += 25;
-    }
-
     this.requests.forEach((request, i) => {
       request.zIndex += 1;
-      request.x += 25;
+      request.x += 15;
     });
 
     request.prependTo(this.app.stage);

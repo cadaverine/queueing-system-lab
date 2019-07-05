@@ -65,17 +65,17 @@ export default class Request extends Graphics {
 
     this.lineStyle(2, 0x777777, 10);
     this.beginFill(backgroundColor);
-    this.drawRoundedRect(20, 20, 100, 50, 10);
+    this.drawRoundedRect(0, 0, 46, 24, 5);
     this.endFill();
 
     const textStyle = {
       fontFamily : 'Arial',
-      fontSize: 24,
-      fill : "white",
-      align : 'right'
+      fontSize: 12,
+      fontWeight: 'bold',
+      align : 'center'
     }
     const text = new Text(type, textStyle);
-    text.position.set(70, 45);
+    text.position.set(23, 12);
     text.anchor.set(0.5, 0.5);
 
     this.addChild(text);
