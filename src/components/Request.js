@@ -8,9 +8,11 @@ export default class Request extends Graphics {
     return ['XCHG', 'CARD', 'CRED', 'ACNT'];
   }
 
+
   static get number() {
     return requestsNumber;
   }
+
 
   constructor(options = {}) {
     const defaultOptions = {
@@ -30,17 +32,21 @@ export default class Request extends Graphics {
     requestsNumber += 1;
   }
 
+
   appendTo(parent) {
     parent.addChild(this);
   }
+
 
   prependTo(parent) {
     parent.addChildAt(this, 0);
   }
 
+
   clear() {
     this.destroy();
   }
+
 
   _styling(options) {
     const { x, y, type } = options;
@@ -63,26 +69,50 @@ export default class Request extends Graphics {
         backgroundColor = 0xFFFFFF;
     }
 
-    this.lineStyle(2, 0x777777, 10);
-    this.beginFill(backgroundColor);
-    this.drawRoundedRect(0, 0, 46, 24, 5);
-    this.endFill();
+    this
+      .lineStyle(2, 0x777777, 10)
+      .beginFill(backgroundColor)
+      .drawRoundedRect(0, 0, 46, 24, 5)
+      .endFill();
 
+    this
+      ._addText(type)
+      ._addLoader();
+
+    this.x = x;
+    this.y = y;
+
+    this.filters = [new DropShadowFilter()];
+  }
+
+
+  _addText(content) {
     const textStyle = {
       fontFamily : 'Arial',
       fontSize: 12,
       fontWeight: 'bold',
       align : 'center'
     }
-    const text = new Text(type, textStyle);
+
+    const text = new Text(content, textStyle);
+
     text.position.set(23, 12);
-    text.anchor.set(0.5, 0.5);
+    text.anchor.set(0.5, 0.7);
 
     this.addChild(text);
 
-    this.x = x;
-    this.y = y;
+    return this;
+  }
 
-    this.filters = [new DropShadowFilter()];
+
+  _addLoader() {
+    const loader = new Graphics()
+      .beginFill(0xdddddd)
+      .drawRect(3, 17, 40, 4, 0)
+      .endFill();
+
+    this.addChild(loader);
+
+    return this;
   }
 }
