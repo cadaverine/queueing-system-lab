@@ -1,7 +1,6 @@
-import Request, { getRandomRequestType } from './Request';
-import { range } from '../helpers/utils';
+import Request from './Request';
 import { Application } from 'pixi.js';
-
+import { range, getRandomType } from '../helpers/utils';
 
 export default class App {
   constructor(parent) {
@@ -27,7 +26,7 @@ export default class App {
     this.requests = range(0, 10).map(i => new Request({
       x: 400 + 25 * i,
       y: 260,
-      type: getRandomRequestType(),
+      type: getRandomType(Request.types),
     }))
 
     this.requests.forEach(request => request.appendTo(this.app.stage));
@@ -62,7 +61,7 @@ export default class App {
   }
 
   createRequest(requestType) {
-    const type = requestType != null ? requestType : getRandomRequestType();
+    const type = requestType != null ? requestType : getRandomType(Request.types);
 
     return new Request({ x: 400, y: 260, type });
   }

@@ -2,18 +2,12 @@ import { Graphics, Text } from 'pixi.js';
 import { DropShadowFilter } from '@pixi/filter-drop-shadow';
 
 let requestsNumber = 0;
-const allowedTypes = ['XCHG', 'CARD', 'CRED', 'ACNT'];
-
-
-export function getRandomRequestType() {
-  const { length } = allowedTypes;
-
-  const type = allowedTypes[(Math.round(Math.random() * 10) % length)]
-  return type
-}
-
 
 export default class Request extends Graphics {
+  static get types() {
+    return ['XCHG', 'CARD', 'CRED', 'ACNT'];
+  }
+
   static get number() {
     return requestsNumber;
   }
