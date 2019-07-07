@@ -1,4 +1,5 @@
 import Request from './Request';
+import ServiceDevice from './ServiceDevice';
 import { Application } from 'pixi.js';
 import { range, getRandomType } from '../helpers/utils';
 
@@ -7,7 +8,7 @@ export default class App {
   constructor(parent) {
     this.app = new Application({
       width: 1200,
-      height: 600,
+      height: 620,
       antialiasing: true,
       transparent: true,
       resolution: 1
@@ -20,6 +21,7 @@ export default class App {
     parent.appendChild(this.app.view);
 
     this.requests = [];
+    this.devicesTypes = ['NO', 'NO', 'NX', 'NX', 'NX', 'NX', 'NX'];
     this.currentRequest = null;
   }
 
@@ -27,10 +29,17 @@ export default class App {
   setup() {
     this.requests = range(0, 10).map(i => new Request({
       x: 400 + 15 * i,
-      y: 260,
+      y: 280,
       type: getRandomType(Request.types),
     }))
 
+    this.devices = this.devicesTypes.map((type, i) => new ServiceDevice({
+      x: 1000,
+      y: 50 + 75 * i,
+      type,
+    }))
+
+    this.devices.forEach(request => request.appendTo(this.app.stage));
     this.requests.forEach(request => request.appendTo(this.app.stage));
   }
 
@@ -80,7 +89,7 @@ export default class App {
   createRequest(requestType) {
     const type = requestType != null ? requestType : getRandomType(Request.types);
 
-    return new Request({ x: 400, y: 260, type });
+    return new Request({ x: 400, y: 280, type });
   }
 
 
