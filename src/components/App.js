@@ -2,6 +2,7 @@ import Request from './Request';
 import { Application } from 'pixi.js';
 import { range, getRandomType } from '../helpers/utils';
 
+
 export default class App {
   constructor(parent) {
     this.app = new Application({
@@ -22,6 +23,7 @@ export default class App {
     this.currentRequest = null;
   }
 
+
   setup() {
     this.requests = range(0, 10).map(i => new Request({
       x: 400 + 15 * i,
@@ -32,9 +34,11 @@ export default class App {
     this.requests.forEach(request => request.appendTo(this.app.stage));
   }
 
+
   start() {
     this.app.ticker.add(delta => this.gameLoop(delta));
   }
+
 
   gameLoop(delta) {
     if (this.currentRequest != null) {
@@ -47,6 +51,10 @@ export default class App {
     } else {
       if (this.requests.length > 0) {
         this.currentRequest = this.requests.pop()
+        this.setRequestVelocity(this.currentRequest, {
+          y: 0,
+          x: 3 + delta,
+        });
       }
     }
 
@@ -56,15 +64,25 @@ export default class App {
     }
   }
 
-  moveRequest(request, step) {
-    request.x += step;
+
+  setRequestVelocity(request, { x, y }) {
+    request.vx = x;
+    request.vy = y;
   }
+
+
+  moveRequest(request, step) {
+    request.x += request.vx;
+    request.y += request.vy;
+  }
+
 
   createRequest(requestType) {
     const type = requestType != null ? requestType : getRandomType(Request.types);
 
     return new Request({ x: 400, y: 260, type });
   }
+
 
   addRequestToQueue(request) {
     this.requests.forEach((request, i) => {
