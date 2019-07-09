@@ -1,5 +1,4 @@
 import { Graphics, Text } from 'pixi.js';
-import { DropShadowFilter } from '@pixi/filter-drop-shadow';
 
 let devicesNumber = 0;
 
@@ -35,11 +34,13 @@ export default class ServiceDevice extends Graphics {
 
   appendTo(parent) {
     parent.addChild(this);
+    return this;
   }
 
 
   prependTo(parent) {
     parent.addChildAt(this, 0);
+    return this;
   }
 
 
@@ -74,8 +75,14 @@ export default class ServiceDevice extends Graphics {
 
     this.x = x;
     this.y = y;
+  }
 
-    this.filters = [new DropShadowFilter()];
+
+  get slotCoords() {
+    return {
+      x: this.x + 4 + 2,
+      y: this.y + 23 + 3,
+    }
   }
 
 
@@ -100,12 +107,12 @@ export default class ServiceDevice extends Graphics {
 
 
   _addLoader() {
-    const loader = new Graphics()
-      .beginFill(0xdddddd)
+    this.slot = new Graphics()
+      .beginFill(0xffffff)
       .drawRect(4, 23, 50, 30, 0)
       .endFill();
 
-    this.addChild(loader);
+    this.addChild(this.slot);
 
     return this;
   }
