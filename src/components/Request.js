@@ -29,17 +29,39 @@ export default class Request extends Graphics {
     this._styling(initialOptions);
 
     this.id = requestsNumber;
+    this.served = false;
+
     requestsNumber += 1;
   }
 
 
   appendTo(parent) {
     parent.addChild(this);
+    return this;
   }
 
 
   prependTo(parent) {
     parent.addChildAt(this, 0);
+    return this;
+  }
+
+
+  setVelocity(velocity) {
+    const { x, y } = velocity;
+
+    if (x != null) { this.vx = x; }
+    if (y != null) { this.vy = y; }
+  }
+
+
+  moveX() {
+    this.x += this.vx;
+  }
+
+
+  moveY() {
+    this.y += this.vy;
   }
 
 
