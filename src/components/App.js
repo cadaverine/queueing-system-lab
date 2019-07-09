@@ -41,29 +41,38 @@ export default class App {
 
     this.devices.forEach(request => request.appendTo(this.app.stage));
     this.requests.forEach(request => request.appendTo(this.app.stage));
+
+    this.ticker = this.app.ticker.add(delta => this.gameLoop(delta));
+    this.ticker.stop();
   }
 
 
   start() {
-    this.app.ticker.add(delta => this.gameLoop(delta));
+    this.ticker.start();
+  }
+
+
+  stop() {
+    this.ticker.stop();
   }
 
 
   gameLoop(delta) {
     if (this.currentRequest != null) {
-      if (this.currentRequest.x >= 1200) {
+      if (this.currentRequest.served === true) {
         this.currentRequest.clear()
         this.currentRequest = null;
       } else {
-        this.moveRequest(this.currentRequest, 3 + delta);
+        // this.moveRequest(this.currentRequest, 3 + delta);
+        this.moveRequestToDevice(this.devices[2], this.currentRequest);
       }
     } else {
       if (this.requests.length > 0) {
         this.currentRequest = this.requests.pop()
-        this.setRequestVelocity(this.currentRequest, {
-          y: 0,
+        this.currentRequest.setVelocity({
+          y: 3 + delta,
           x: 3 + delta,
-        });
+        })
       }
     }
 
@@ -74,15 +83,32 @@ export default class App {
   }
 
 
-  setRequestVelocity(request, { x, y }) {
-    request.vx = x;
-    request.vy = y;
-  }
+  moveRequestToDevice(device, request) {
+    const slot = device.slotCoords;
 
+    if (slot.x - request.x > 200) {
+      request.moveX();
+    } else if (slot.y !== request.y) {
+      if (Math.abs(slot.y - request.y) < Math.abs(request.vy)) {
+        request.vy = Math.abs(slot.y - request.y);
+      }
 
-  moveRequest(request, step) {
-    request.x += request.vx;
-    request.y += request.vy;
+      if (slot.y - request.y < 0) {
+        request.y -= request.vy;
+      } else {
+        request.y += request.vy;
+      }
+
+      // request.moveY();
+    } else if (slot.x !== request.x) {
+      if (Math.abs(slot.x - request.x) <= request.vx) {
+        request.vx = slot.x - request.x;
+      }
+
+      request.moveX();
+    } else {
+      request.served = true;
+    }
   }
 
 
