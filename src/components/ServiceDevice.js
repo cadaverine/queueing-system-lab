@@ -18,6 +18,7 @@ export default class ServiceDevice extends Graphics {
       x: 500,
       y: 500,
       type: 'NX',
+      requestTypes: ['XCHG', 'CARD', 'CRED', 'ACNT']
     }
 
     const initialOptions = Object.assign({}, defaultOptions, options);
@@ -28,6 +29,10 @@ export default class ServiceDevice extends Graphics {
     this._styling(initialOptions);
 
     this.id = devicesNumber;
+    this.type = initialOptions.type;
+    this.requestTypes = initialOptions.requestTypes;
+    this.isFree = true;
+
     devicesNumber += 1;
   }
 
@@ -84,6 +89,13 @@ export default class ServiceDevice extends Graphics {
       y: this.y + 23 + 3,
     }
   }
+
+
+  // get requestTypes() {
+  //   switch(this.type) {
+  //     case 'NX':
+  //   }
+  // }
 
 
   _addText(content) {
