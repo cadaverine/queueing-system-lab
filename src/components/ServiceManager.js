@@ -119,7 +119,7 @@ export default class ServiceManager {
   }
 
 
-  _addRequestRandom(value = 0.98) {
+  _addRequestRandom(value = 0.97) {
     if (Math.random() > value) {
       const newRequest = this.generateRequest();
       this._addRequestToQueue(newRequest);
