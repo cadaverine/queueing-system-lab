@@ -32,6 +32,7 @@ export default class ServiceDevice extends Graphics {
     this.type = initialOptions.type;
     this.requestTypes = initialOptions.requestTypes;
     this.isFree = true;
+    this.isInWork = false;
 
     devicesNumber += 1;
   }
