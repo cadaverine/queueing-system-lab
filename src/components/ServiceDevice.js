@@ -18,7 +18,14 @@ export default class ServiceDevice extends Graphics {
       x: 500,
       y: 500,
       type: 'NX',
-      requestTypes: ['XCHG', 'CARD', 'CRED', 'ACNT']
+      requestTypes: ['XCHG', 'CARD', 'CRED', 'ACNT'],
+      textStyle: {
+        fill: 0xffffff,
+        align : 'center',
+        fontSize: 12,
+        fontWeight: 'bold',
+        fontFamily : 'Arial',
+      },
     }
 
     const initialOptions = Object.assign({}, defaultOptions, options);
@@ -56,7 +63,13 @@ export default class ServiceDevice extends Graphics {
 
 
   _styling(options) {
-    const { x, y, type } = options;
+    const {
+      x,
+      y,
+      type,
+      textStyle,
+      requestTypes,
+    } = options;
 
     let backgroundColor;
     switch (type) {
@@ -72,11 +85,12 @@ export default class ServiceDevice extends Graphics {
 
     this
       .beginFill(backgroundColor)
-      .drawRoundedRect(0, 0, 58, 60, 0)
+      .drawRoundedRect(0, 0, 110, 60, 0)
       .endFill();
 
     this
-      ._addText(type)
+      ._addText(type, textStyle)
+      ._addDescription(requestTypes, textStyle)
       ._addLoader();
 
     this.x = x;
@@ -92,23 +106,30 @@ export default class ServiceDevice extends Graphics {
   }
 
 
-  // get requestTypes() {
-  //   switch(this.type) {
-  //     case 'NX':
-  //   }
-  // }
+  _addDescription(requestTypes, textStyle) {
+    const typesText = new Text('Types:', textStyle);
+
+    typesText.position.set(82, 17);
+    typesText.anchor.set(0.5, 1);
+
+    this.addChild(typesText);
+
+    requestTypes
+      .forEach((type, i) => {
+        const typeText = new Text(type, { ...textStyle, ...{ fontWeight: '' }});
+
+        typeText.position.set(82, 33 + i * 14);
+        typeText.anchor.set(0.5, 1);
+
+        this.addChild(typeText);
+      })
+
+    return this;
+  }
 
 
-  _addText(content) {
-    const textStyle = {
-      fill: 0xffffff,
-      align : 'center',
-      fontSize: 16,
-      fontWeight: 'bold',
-      fontFamily : 'Arial',
-    }
-
-    const text = new Text(content, textStyle);
+  _addText(content, textStyle) {
+    const text = new Text(content, { ...textStyle, ...{ fontSize: 16 }});
 
     text.position.set(29, 20);
     text.anchor.set(0.5, 1);
