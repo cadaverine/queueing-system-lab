@@ -32,10 +32,34 @@ export default class ServiceManager {
 
     this.currentDevice = null;
     this.currentRequest = null;
+
+    this.services = new Map();
+  }
+
+
+  startQueuingSystem(delta) {
+    this.services.forEach(this._service.bind(this));
+
+    const request = this.requests[this.requests.length - 1];
+    const device = this.getSuitableDevice(request);
+
+    if (request != null && device != null) {
+      request.setVelocity({
+        y: 3 + delta,
+        x: 3 + delta,
+      })
+      this.services.set(request, device);
+      this.requests.splice(-1);
+      device.isFree = false;
+    }
+
+    this._addRequestRandom();
   }
 
 
   getSuitableDevice(request) {
+    if (request == null) return null;
+
     const suitableDevices = this.devices
       .filter(device => device.isFree)
       .filter(device => device.requestTypes.includes(request.type));
@@ -57,7 +81,7 @@ export default class ServiceManager {
   }
 
 
-  moveRequestToDevice(request, device) {
+  _moveRequestToDevice(request, device) {
     const slot = device.slotCoords;
 
     if (slot.x - request.x > 200) {
@@ -79,21 +103,43 @@ export default class ServiceManager {
 
       request.moveX();
     } else {
-      request.serve();
+      device.isInWork = true;
     }
   }
 
 
-  addRequestToQueue(request) {
-    const { zIndex } = this.requests[0];
+  _service(device, request) {
+    if (!device.isInWork) {
+      this._moveRequestToDevice(request, device);
+    } else if (!request.served){
+      request.serve();
+    } else {
+      this._removeRequest(request);
+    }
+  }
 
-    this.requests.forEach((request, i) => {
-      request.zIndex += 1;
-      request.x += 15;
-    });
+
+  _addRequestRandom(value = 0.98) {
+    if (Math.random() > value) {
+      const newRequest = this.generateRequest();
+      this._addRequestToQueue(newRequest);
+    }
+  }
+
+
+  _addRequestToQueue(request) {
+    if (this.requests.length > 0) {
+      const { zIndex } = this.requests[0];
+
+      this.requests.forEach((request, i) => {
+        request.zIndex += 1;
+        request.x += 15;
+      });
+
+      request.zIndex = zIndex;
+    }
 
     request.appendTo(this.scene);
-    request.zIndex = zIndex;
 
     this.scene.children.forEach(child => child.updateTransform());
     this.requests.unshift(request);
@@ -116,5 +162,16 @@ export default class ServiceManager {
       y: 280,
       type: getRandomType(Request.types),
     }).appendTo(scene))
+  }
+
+
+  _removeRequest(request) {
+    const device = this.services.get(request);
+
+    device.isFree = true
+    device.isInWork = false
+
+    this.services.delete(request);
+    request.destroy();
   }
 }
