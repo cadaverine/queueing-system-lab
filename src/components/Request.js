@@ -42,8 +42,8 @@ export default class Request extends Graphics {
   }
 
 
-  prependTo(parent) {
-    parent.addChildAt(this, 0);
+  prependTo(parent, zIndex) {
+    parent.addChildAt(this, zIndex);
     return this;
   }
 

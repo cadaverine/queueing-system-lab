@@ -26,6 +26,7 @@ export default class ServiceManager {
       throw Error('ServiceManager: "scene" is required');
     }
 
+    this.scene = this._options.scene;
     this.devices = this._createDevices(this._options.scene);
     this.requests = this._createRequests(this._options.scene);
 
@@ -84,12 +85,17 @@ export default class ServiceManager {
 
 
   addRequestToQueue(request) {
+    const { zIndex } = this.requests[0];
+
     this.requests.forEach((request, i) => {
       request.zIndex += 1;
       request.x += 15;
     });
 
-    request.prependTo(this._options.scene);
+    request.appendTo(this.scene);
+    request.zIndex = zIndex;
+
+    this.scene.children.forEach(child => child.updateTransform());
     this.requests.unshift(request);
   }
 
@@ -100,7 +106,7 @@ export default class ServiceManager {
       y: 50 + 75 * i,
       type: options.type,
       requestTypes: options.requestTypes,
-    }).appendTo(scene))
+    }).prependTo(scene))
   }
 
 

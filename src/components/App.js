@@ -1,8 +1,5 @@
-import Request from './Request';
-import ServiceDevice from './ServiceDevice';
 import ServiceManager from './ServiceManager';
 import { Application } from 'pixi.js';
-import { range, getRandomType } from '../helpers/utils';
 
 
 export default class App {
@@ -20,6 +17,9 @@ export default class App {
     this.app.view.style.border = '1px solid black';
 
     parent.appendChild(this.app.view);
+
+    this.app.stage.sortDirty = true;
+    this.app.stage.sortableChildren = true;
 
     this.manager = new ServiceManager({ scene: this.app.stage });
     this.services = new Map();
