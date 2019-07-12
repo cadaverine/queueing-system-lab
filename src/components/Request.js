@@ -66,11 +66,6 @@ export default class Request extends Graphics {
   }
 
 
-  clear() {
-    this.destroy();
-  }
-
-
   serve() {
     if (this.loaderLine.width === 40) {
       this.served = true;
