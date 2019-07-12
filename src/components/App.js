@@ -25,13 +25,9 @@ export default class App {
     this.services = new Map();
   }
 
-  // createControlPanel() {
-
-  // }
-
 
   setup() {
-    this.ticker = this.app.ticker.add(delta => this.gameLoop(delta));
+    this.ticker = this.app.ticker.add(delta => this.manager.startQueuingSystem(delta));
     this.ticker.stop();
   }
 
@@ -43,39 +39,5 @@ export default class App {
 
   stop() {
     this.ticker.stop();
-  }
-
-
-  gameLoop(delta) {
-    if (this.currentRequest != null) {
-      if (this.currentRequest.served === true) {
-        this.services.delete(this.currentRequest);
-        this.currentRequest.clear();
-        this.currentRequest = null;
-      } else {
-        if (!this.services.has(this.currentRequest)) {
-          const device = this.manager.getSuitableDevice(this.currentRequest);
-
-          this.services.set(this.currentRequest, device);
-        }
-
-        const device = this.services.get(this.currentRequest);
-
-        this.manager.moveRequestToDevice(this.currentRequest, device);
-      }
-    } else {
-      if (this.manager.requests.length > 0) {
-        this.currentRequest = this.manager.requests.pop()
-        this.currentRequest.setVelocity({
-          y: 3 + delta,
-          x: 3 + delta,
-        })
-      }
-    }
-
-    if (Math.random() > 0.99) {
-      const newRequest = this.manager.generateRequest();
-      this.manager.addRequestToQueue(newRequest);
-    }
   }
 }
