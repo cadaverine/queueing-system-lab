@@ -35,12 +35,17 @@ export default class ServiceManager {
 
 
   getSuitableDevice(request) {
-    const device = this.devices
+    const suitableDevices = this.devices
       .filter(device => device.isFree)
-      .filter(device => device.requestTypes.includes(request.type))
-      .slice(0, 1)
+      .filter(device => device.requestTypes.includes(request.type));
 
-    return device;
+    if (suitableDevices.length > 0) {
+      const randomIndex = Math.round(Math.random() * (suitableDevices.length - 1));
+
+      return suitableDevices[randomIndex];
+    } else {
+      return null;
+    }
   }
 
 
@@ -48,6 +53,44 @@ export default class ServiceManager {
     const type = requestType != null ? requestType : getRandomType(Request.types);
 
     return new Request({ x: 400, y: 280, type });
+  }
+
+
+  moveRequestToDevice(request, device) {
+    const slot = device.slotCoords;
+
+    if (slot.x - request.x > 200) {
+      request.moveX();
+    } else if (slot.y !== request.y) {
+      if (Math.abs(slot.y - request.y) < Math.abs(request.vy)) {
+        request.vy = Math.abs(slot.y - request.y);
+      }
+
+      if (slot.y - request.y < 0) {
+        request.y -= request.vy;
+      } else {
+        request.y += request.vy;
+      }
+    } else if (slot.x !== request.x) {
+      if (Math.abs(slot.x - request.x) <= request.vx) {
+        request.vx = slot.x - request.x;
+      }
+
+      request.moveX();
+    } else {
+      request.serve();
+    }
+  }
+
+
+  addRequestToQueue(request) {
+    this.requests.forEach((request, i) => {
+      request.zIndex += 1;
+      request.x += 15;
+    });
+
+    request.prependTo(this._options.scene);
+    this.requests.unshift(request);
   }
 
 
