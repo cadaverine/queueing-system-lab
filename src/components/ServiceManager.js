@@ -30,9 +30,6 @@ export default class ServiceManager {
     this.devices = this._createDevices(this._options.scene);
     this.requests = this._createRequests(this._options.scene);
 
-    this.currentDevice = null;
-    this.currentRequest = null;
-
     this.services = new Map();
   }
 
@@ -41,13 +38,12 @@ export default class ServiceManager {
     this.services.forEach(this._service.bind(this));
 
     const request = this.requests[this.requests.length - 1];
-    const device = this.getSuitableDevice(request);
+    const device = this._getSuitableDevice(request);
 
     if (request != null && device != null) {
-      request.setVelocity({
-        y: 3 + delta,
-        x: 3 + delta,
-      })
+      request.vx = 4;
+      request.vy = 4;
+
       this.services.set(request, device);
       this.requests.splice(-1);
       device.isFree = false;
@@ -57,7 +53,7 @@ export default class ServiceManager {
   }
 
 
-  getSuitableDevice(request) {
+  _getSuitableDevice(request) {
     if (request == null) return null;
 
     const suitableDevices = this.devices
@@ -74,7 +70,7 @@ export default class ServiceManager {
   }
 
 
-  generateRequest(requestType) {
+  _generateRequest(requestType) {
     const type = requestType != null ? requestType : getRandomType(Request.types);
 
     return new Request({ x: 400, y: 280, type });
@@ -85,7 +81,7 @@ export default class ServiceManager {
     const slot = device.slotCoords;
 
     if (slot.x - request.x > 200) {
-      request.moveX();
+      request.x += request.vx;
     } else if (slot.y !== request.y) {
       if (Math.abs(slot.y - request.y) < Math.abs(request.vy)) {
         request.vy = Math.abs(slot.y - request.y);
@@ -101,7 +97,7 @@ export default class ServiceManager {
         request.vx = slot.x - request.x;
       }
 
-      request.moveX();
+      request.x += request.vx;
     } else {
       device.isInWork = true;
     }
@@ -119,9 +115,9 @@ export default class ServiceManager {
   }
 
 
-  _addRequestRandom(value = 0.97) {
+  _addRequestRandom(value = 0.96) {
     if (Math.random() > value) {
-      const newRequest = this.generateRequest();
+      const newRequest = this._generateRequest();
       this._addRequestToQueue(newRequest);
     }
   }
