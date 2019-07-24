@@ -12,15 +12,12 @@ export default class App {
       resolution: 1
     });
 
-    parent.style.display = 'flex';
-    parent.style.justifyContent = 'center';
-    this.app.view.style.border = '1px solid black';
-
     parent.appendChild(this.app.view);
 
     this.app.stage.sortDirty = true;
     this.app.stage.sortableChildren = true;
 
+    this.parent = parent
     this.manager = new ServiceManager({ scene: this.app.stage });
     this.services = new Map();
   }
