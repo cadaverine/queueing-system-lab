@@ -6,3 +6,12 @@ body {
 canvas {
     border: 1px solid black;
 }
+
+.control-panel {
+    height: 30px;
+    display: flex;
+}
+
+.button {
+    width: 70px;
+}
