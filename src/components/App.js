@@ -1,4 +1,5 @@
 import ServiceManager from './ServiceManager';
+import ControlPanel from './ControlPanel';
 import { Application } from 'pixi.js';
 
 
@@ -12,6 +13,9 @@ export default class App {
       resolution: 1
     });
 
+    this.panel = new ControlPanel();
+
+    parent.appendChild(this.panel.view);
     parent.appendChild(this.app.view);
 
     this.app.stage.sortDirty = true;
@@ -24,6 +28,9 @@ export default class App {
 
 
   setup() {
+    this.panel.startButton.onclick = this.start.bind(this);
+    this.panel.pauseButton.onclick = this.pause.bind(this);
+
     this.ticker = this.app.ticker.add(delta => this.manager.startQueuingSystem(delta));
     this.ticker.stop();
   }
@@ -34,7 +41,7 @@ export default class App {
   }
 
 
-  stop() {
+  pause() {
     this.ticker.stop();
   }
 }
