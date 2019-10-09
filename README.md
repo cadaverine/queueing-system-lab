@@ -1,4 +1,4 @@
-## Лабораторная работа ТСД (Системы массового обслуживания)
+## Лабораторная работа "Системы массового обслуживания"
 
 [DEPLOYED](https://cadaverine.github.io/queueing-system-lab/) | [![Build Status](https://travis-ci.com/cadaverine/queueing-system-lab.svg?branch=master)](https://travis-ci.com/cadaverine/queueing-system-lab)
 
