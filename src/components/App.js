@@ -28,11 +28,24 @@ export default class App {
 
 
   setup() {
-    this.panel.startButton.onclick = this.start.bind(this);
-    this.panel.pauseButton.onclick = this.pause.bind(this);
+    this.panel.startButton.onclick = () => {
+      if (this.panel.state === 'started') {
+        this.panel.state = 'paused';
+        this.pause();
+      } else {
+        this.panel.state = 'started';
+        this.start();
+      }
+    };
+
+    this.panel.stopButton.onclick = () => {
+      this.panel.state = 'stopped'
+      this.pause();
+      this.stop();
+    };
 
     this.ticker = this.app.ticker.add(delta => this.manager.startQueuingSystem(delta));
-    this.ticker.stop();
+    this.pause();
   }
 
 
@@ -42,6 +55,12 @@ export default class App {
 
 
   pause() {
+    this.ticker.stop();
+  }
+
+
+  stop() {
+    this.manager.reset();
     this.ticker.stop();
   }
 }
