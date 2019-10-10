@@ -8,4 +8,3 @@ document.body.appendChild(container);
 const app = new App(container);
 
 app.setup();
-app.start();
