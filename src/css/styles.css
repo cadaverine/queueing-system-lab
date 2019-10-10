@@ -8,10 +8,9 @@ canvas {
 }
 
 .control-panel {
-    height: 30px;
-    display: flex;
+    display: grid;
 }
 
 .button {
-    width: 70px;
+    width: 110px;
 }
