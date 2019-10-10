@@ -53,6 +53,18 @@ export default class ServiceManager {
   }
 
 
+  reset() {
+    while (this.scene.children[0]) {
+      this.scene.removeChild(this.scene.children[0]);
+    }
+
+    this.devices = this._createDevices(this._options.scene);
+    this.requests = this._createRequests(this._options.scene);
+
+    this.services = new Map();
+  }
+
+
   _getSuitableDevice(request) {
     if (request == null) return null;
 
