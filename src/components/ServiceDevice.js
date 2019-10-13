@@ -95,6 +95,21 @@ export default class ServiceDevice extends Graphics {
       ._addStatistics(requestTypes, textStyle)
       ._addLoader();
 
+    this
+      .beginFill(0xeeeeee)
+      .drawRect(104, 3, 1, 59)
+      .endFill();
+
+    this
+      .beginFill(0xeeeeee)
+      .drawRect(145, 3, 1, 59)
+      .endFill();
+
+    this
+      .beginFill(0xeeeeee)
+      .drawRect(60, 47, 125, 1)
+      .endFill();
+
     this.x = x;
     this.y = y;
   }
@@ -158,8 +173,8 @@ export default class ServiceDevice extends Graphics {
         }
       });
 
-    const summaryText = new Text('Summ.:', textStyle);
-    summaryText.position.set(82, 63);
+    const summaryText = new Text('Sum.:', textStyle);
+    summaryText.position.set(85, 63);
     summaryText.anchor.set(0.5, 1);
     this.addChild(summaryText);
 
