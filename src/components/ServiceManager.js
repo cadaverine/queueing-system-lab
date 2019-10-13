@@ -122,6 +122,7 @@ export default class ServiceManager {
     } else if (!request.served){
       request.serve();
     } else {
+      device.registerOperation('service', request.type);
       this._removeRequest(request);
     }
   }
