@@ -138,7 +138,7 @@ export default class ServiceManager {
 
   _addRequestToQueue(request) {
     if (this.requests.length > 0) {
-      const { zIndex } = this.requests[0];
+      const [{ zIndex }] = this.requests;
 
       this.requests.forEach((request, i) => {
         request.zIndex += 1;
