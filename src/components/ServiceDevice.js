@@ -33,15 +33,17 @@ export default class ServiceDevice extends Graphics {
     super(initialOptions);
     Graphics.call(this);
 
-    this._styling(initialOptions);
-
     this.id = devicesNumber;
     this.type = initialOptions.type;
     this.requestTypes = initialOptions.requestTypes;
     this.isFree = true;
     this.isInWork = false;
+    this.statistics = {};
+    this.statisticsTexts = {};
 
     devicesNumber += 1;
+
+    this._styling(initialOptions);
   }
 
 
@@ -85,12 +87,12 @@ export default class ServiceDevice extends Graphics {
 
     this
       .beginFill(backgroundColor)
-      .drawRoundedRect(0, 0, 110, 60, 0)
+      .drawRoundedRect(0, 0, 190, 65, 0)
       .endFill();
 
     this
       ._addText(type, textStyle)
-      ._addDescription(requestTypes, textStyle)
+      ._addStatistics(requestTypes, textStyle)
       ._addLoader();
 
     this.x = x;
@@ -106,22 +108,79 @@ export default class ServiceDevice extends Graphics {
   }
 
 
-  _addDescription(requestTypes, textStyle) {
-    const typesText = new Text('Types:', textStyle);
+  registerOperation(operationType, requestType) {
+    const typeStat = this.statisticsTexts[requestType];
+    const summStat = this.statisticsTexts['summary'];
 
+    typeStat[operationType].text = Number(typeStat[operationType].text) + 1
+    summStat[operationType].text = Number(summStat[operationType].text) + 1
+
+    return this;
+  }
+
+
+  _addStatistics(requestTypes, textStyle) {
+    const typesText = new Text('Types:', textStyle);
     typesText.position.set(82, 17);
     typesText.anchor.set(0.5, 1);
-
     this.addChild(typesText);
+
+    const servedText = new Text('Serv.:', textStyle);
+    servedText.position.set(125, 17);
+    servedText.anchor.set(0.5, 1);
+    this.addChild(servedText);
+
+    const declinedText = new Text('Decl.:', textStyle);
+    declinedText.position.set(165, 17);
+    declinedText.anchor.set(0.5, 1);
+    this.addChild(declinedText);
 
     requestTypes
       .forEach((type, i) => {
         const typeText = new Text(type, { ...textStyle, ...{ fontWeight: '' }});
-
         typeText.position.set(82, 33 + i * 14);
         typeText.anchor.set(0.5, 1);
-
         this.addChild(typeText);
+
+        const typeTextServed = new Text(0, { ...textStyle, ...{ fontWeight: '' }});
+        typeTextServed.position.set(125, 33 + i * 14);
+        typeTextServed.anchor.set(0.5, 1);
+        this.addChild(typeTextServed);
+
+        const typeTextRejected = new Text(0, { ...textStyle, ...{ fontWeight: '' }});
+        typeTextRejected.position.set(165, 33 + i * 14);
+        typeTextRejected.anchor.set(0.5, 1);
+        this.addChild(typeTextRejected);
+
+        this.statisticsTexts[type] = {
+          service: typeTextServed,
+          rejection: typeTextRejected,
+        }
+      });
+
+    const summaryText = new Text('Summ.:', textStyle);
+    summaryText.position.set(82, 63);
+    summaryText.anchor.set(0.5, 1);
+    this.addChild(summaryText);
+
+    const summaryTextServed = new Text(0, { ...textStyle, ...{ fontWeight: '' }});
+    summaryTextServed.position.set(125, 63);
+    summaryTextServed.anchor.set(0.5, 1);
+    this.addChild(summaryTextServed);
+
+    const summaryTextRejected = new Text(0, { ...textStyle, ...{ fontWeight: '' }});
+    summaryTextRejected.position.set(165, 63);
+    summaryTextRejected.anchor.set(0.5, 1);
+    this.addChild(summaryTextRejected);
+
+    this.statisticsTexts['summary'] = {
+      service: summaryTextServed,
+      rejection: summaryTextRejected,
+    }
+
+    requestTypes
+      .forEach(type => {
+        this.registerOperation('service', type);
       })
 
     return this;
