@@ -45,6 +45,7 @@ export default class App {
     };
 
     this.ticker = this.app.ticker.add(delta => this.manager.startQueuingSystem(delta));
+    this.ticker.update();
     this.pause();
   }
 
@@ -61,6 +62,7 @@ export default class App {
 
   stop() {
     this.manager.reset();
+    this.ticker.update();
     this.ticker.stop();
   }
 }
