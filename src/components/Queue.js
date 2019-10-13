@@ -76,9 +76,7 @@ export default class Queue extends Graphics {
     } = options;
 
     this._height = requestHeight + 10;
-    this._width = capacity == 1 ?
-      capacity * requestWidth :
-      capacity * requestWidth - requestWidth / 2;
+    this._width = requestWidth + 17 * (capacity - 1);
 
     this
       .beginFill(0x666666)
