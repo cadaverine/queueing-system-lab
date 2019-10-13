@@ -30,6 +30,7 @@ export default class Request extends Graphics {
 
     this.id = requestsNumber;
     this.type = initialOptions.type;
+    this.isMoved = false;
     this._served = false;
 
     requestsNumber += 1;
