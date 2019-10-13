@@ -119,6 +119,12 @@ export default class ServiceManager {
   _service(device, request) {
     if (!device.isInWork) {
       this._moveRequestToDevice(request, device);
+      if (request.isMoved === false) {
+        this.requests
+          .filter(_request => _request !== request)
+          .forEach((request) => { request.x += 15; });
+        request.isMoved = true;
+      }
     } else if (!request.served){
       request.serve();
     } else {
@@ -138,13 +144,13 @@ export default class ServiceManager {
 
   _addRequestToQueue(request) {
     if (this.requests.length > 0) {
-      const [{ zIndex }] = this.requests;
+      const [{ x, zIndex }] = this.requests;
 
       this.requests.forEach((request, i) => {
         request.zIndex += 1;
-        request.x += 15;
       });
 
+      request.x = x - 15;
       request.zIndex = zIndex;
     }
 
@@ -167,7 +173,7 @@ export default class ServiceManager {
 
   _createRequests(scene) {
     return range(0, this._options.requestsNum).map(i => new Request({
-      x: 400 + 15 * i,
+      x: 550 + 15 * i,
       y: 280,
       type: getRandomType(Request.types),
     }).appendTo(scene))
