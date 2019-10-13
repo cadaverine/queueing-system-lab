@@ -178,11 +178,6 @@ export default class ServiceDevice extends Graphics {
       rejection: summaryTextRejected,
     }
 
-    requestTypes
-      .forEach(type => {
-        this.registerOperation('service', type);
-      })
-
     return this;
   }
 
