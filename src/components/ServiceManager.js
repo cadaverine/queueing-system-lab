@@ -1,3 +1,4 @@
+import Queue from './Queue';
 import Request from './Request';
 import ServiceDevice from './ServiceDevice';
 import { range, getRandomType } from '../helpers/utils';
@@ -27,6 +28,7 @@ export default class ServiceManager {
     }
 
     this.scene = this._options.scene;
+    this.queue = this._createQueue(this._options.scene);
     this.devices = this._createDevices(this._options.scene);
     this.requests = this._createRequests(this._options.scene);
 
@@ -161,6 +163,13 @@ export default class ServiceManager {
   }
 
 
+
+  _createQueue(scene) {
+    return (new Queue()).prependTo(scene);
+  }
+
+
+
   _createDevices(scene) {
     return this._options.serviceDevices.map((options, i) => new ServiceDevice({
       x: 1000,
@@ -172,11 +181,13 @@ export default class ServiceManager {
 
 
   _createRequests(scene) {
-    return range(0, this._options.requestsNum).map(i => new Request({
-      x: 550 + 15 * i,
-      y: 280,
-      type: getRandomType(Request.types),
-    }).appendTo(scene))
+    return range(0, this._options.requestsNum).map(() => {
+      const request = new Request({ type: getRandomType(Request.types) });
+
+      this.queue.enqueue(request);
+
+      request.appendTo(scene);
+    })
   }
 
 
