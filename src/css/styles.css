@@ -8,15 +8,41 @@ canvas {
 }
 
 .control-panel {
-    display: grid;
+    display: flex;
 }
 
 .wrapper-buttons {
     display: flex;
+    border: 1px solid black;
+}
+
+.wrapper-controls {
+    display: flex;
+    border: 1px solid black;
+}
+
+.add-card {
+    background-color: #54B7FF;
+}
+
+.add-cred {
+    background-color: #724EFF;
+}
+
+.add-acnt {
+    background-color: #FD5D5D;
+}
+
+.add-xchg {
+    background-color: #40DC91;
 }
 
 .button {
+    border: 0px;
+    outline: 0;
     display: flex;
     justify-content: center;
+    align-items: center;
+    height: 30px;
     width: 130px;
 }
