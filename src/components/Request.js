@@ -110,7 +110,7 @@ export default class Request extends Graphics {
     this.x = x;
     this.y = y;
 
-    this.filters = [new DropShadowFilter()];
+    // this.filters = [new DropShadowFilter()];
   }
 
 
