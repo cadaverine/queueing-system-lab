@@ -44,9 +44,34 @@ export default class App {
       this.stop();
     };
 
-    this.ticker = this.app.ticker.add(delta => this.manager.startQueuingSystem(delta));
+    this.setupTypeButtons();
+
+    this.ticker = this.app.ticker.add(delta => this.manager.startQueuingSystem(delta, this.ticker.started));
     this.ticker.update();
     this.pause();
+  }
+
+
+  setupTypeButtons() {
+    this.panel.cardButton.onclick = () => {
+      this.manager.addRequest('CARD');
+      this.ticker.update();
+    };
+
+    this.panel.credButton.onclick = () => {
+      this.manager.addRequest('CRED');
+      this.ticker.update();
+    };
+
+    this.panel.acntButton.onclick = () => {
+      this.manager.addRequest('ACNT');
+      this.ticker.update();
+    };
+
+    this.panel.xchgButton.onclick = () => {
+      this.manager.addRequest('XCHG');
+      this.ticker.update();
+    };
   }
 
 
