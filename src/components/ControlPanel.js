@@ -6,7 +6,7 @@ export default class ControlPanel {
     this.view.innerHTML = `
       <div class="wrapper-buttons">
         <button class="button button_start">▶ Start</button>
-        <button class="button button_stop">◾ Stop</button>
+        <button class="button button_stop">■ Stop</button>
       </div>
       <div class="wrapper-controls"></div>
       <div class="wrapper-statistics"></div>
