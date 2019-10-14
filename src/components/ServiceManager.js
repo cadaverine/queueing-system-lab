@@ -39,22 +39,29 @@ export default class ServiceManager {
   }
 
 
-  startQueuingSystem(delta) {
-    this.services.forEach(this._service.bind(this));
-
-    const [request] = this.queue.requests;
-    const device = this._getSuitableDevice(request);
-
-    if (request != null && device != null) {
-      request.vx = 4;
-      request.vy = 4;
-
-      this.queue.dequeue();
-      this.services.set(request, device);
-      device.isFree = false;
+  startQueuingSystem(delta, started) {
+    if (started) {
+      this.services.forEach(this._service.bind(this));
+  
+      const [request] = this.queue.requests;
+      const device = this._getSuitableDevice(request);
+  
+      if (request != null && device != null) {
+        request.vx = 4;
+        request.vy = 4;
+  
+        this.queue.dequeue();
+        this.services.set(request, device);
+        device.isFree = false;
+      }
+  
+      this._addRequestRandom();
     }
+  }
 
-    this._addRequestRandom();
+
+  addRequest(type) {
+    this._createRequests(1, type);
   }
 
 
@@ -161,9 +168,9 @@ export default class ServiceManager {
   }
 
 
-  _createRequests(number) {
+  _createRequests(number, type) {
     return range(0, number).map(() => {
-      const request = new Request({ type: getRandomType(Request.types) });
+      const request = new Request({ type: type ? type : getRandomType(Request.types) });
 
       this.queue.enqueue(request);
     })
