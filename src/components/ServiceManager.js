@@ -1,3 +1,4 @@
+import Queue from './Queue';
 import Request from './Request';
 import ServiceDevice from './ServiceDevice';
 import { range, getRandomType } from '../helpers/utils';
@@ -9,6 +10,7 @@ export default class ServiceManager {
       scene: null,
       queueNum: 1,
       requestsNum: 10,
+      requestsMax: 30,
       serviceDevices: [
         { type: 'NX', requestTypes: ['XCHG'] },
         { type: 'NX', requestTypes: ['XCHG'] },
@@ -26,10 +28,13 @@ export default class ServiceManager {
       throw Error('ServiceManager: "scene" is required');
     }
 
-    this.scene = this._options.scene;
-    this.devices = this._createDevices(this._options.scene);
-    this.requests = this._createRequests(this._options.scene);
+    this.requestsNum = this._options.requestsNum;
+    this.requestsMax = this._options.requestsMax;
 
+    this.scene = this._options.scene;
+    this.queue = this._createQueue(this.requestsMax);
+    this.devices = this._createDevices(this.scene);
+    this.requests = this._createRequests(this.requestsNum);
     this.services = new Map();
   }
 
@@ -37,15 +42,15 @@ export default class ServiceManager {
   startQueuingSystem(delta) {
     this.services.forEach(this._service.bind(this));
 
-    const request = this.requests[this.requests.length - 1];
+    const [request] = this.queue.requests;
     const device = this._getSuitableDevice(request);
 
     if (request != null && device != null) {
       request.vx = 4;
       request.vy = 4;
 
+      this.queue.dequeue();
       this.services.set(request, device);
-      this.requests.splice(-1);
       device.isFree = false;
     }
 
@@ -58,8 +63,9 @@ export default class ServiceManager {
       this.scene.removeChild(this.scene.children[0]);
     }
 
-    this.devices = this._createDevices(this._options.scene);
-    this.requests = this._createRequests(this._options.scene);
+    this.queue = this._createQueue(this.requestsMax);
+    this.devices = this._createDevices(this.scene);
+    this.requests = this._createRequests(this.requestsNum);
 
     this.services = new Map();
   }
@@ -85,7 +91,7 @@ export default class ServiceManager {
   _generateRequest(requestType) {
     const type = requestType != null ? requestType : getRandomType(Request.types);
 
-    return new Request({ x: 400, y: 280, type });
+    return new Request({ type });
   }
 
 
@@ -119,12 +125,6 @@ export default class ServiceManager {
   _service(device, request) {
     if (!device.isInWork) {
       this._moveRequestToDevice(request, device);
-      if (request.isMoved === false) {
-        this.requests
-          .filter(_request => _request !== request)
-          .forEach((request) => { request.x += 15; });
-        request.isMoved = true;
-      }
     } else if (!request.served){
       request.serve();
     } else {
@@ -136,29 +136,19 @@ export default class ServiceManager {
 
   _addRequestRandom(value = 0.96) {
     if (Math.random() > value) {
-      const newRequest = this._generateRequest();
-      this._addRequestToQueue(newRequest);
+      this._createRequests(1);
     }
   }
 
 
-  _addRequestToQueue(request) {
-    if (this.requests.length > 0) {
-      const [{ x, zIndex }] = this.requests;
+  _createQueue(capacity) {
+    const queue = new Queue({ capacity, scene: this.scene });
 
-      this.requests.forEach((request, i) => {
-        request.zIndex += 1;
-      });
+    queue.prependTo(this.scene);
 
-      request.x = x - 15;
-      request.zIndex = zIndex;
-    }
-
-    request.appendTo(this.scene);
-
-    this.scene.children.forEach(child => child.updateTransform());
-    this.requests.unshift(request);
+    return queue;
   }
+
 
 
   _createDevices(scene) {
@@ -171,12 +161,12 @@ export default class ServiceManager {
   }
 
 
-  _createRequests(scene) {
-    return range(0, this._options.requestsNum).map(i => new Request({
-      x: 550 + 15 * i,
-      y: 280,
-      type: getRandomType(Request.types),
-    }).appendTo(scene))
+  _createRequests(number) {
+    return range(0, number).map(() => {
+      const request = new Request({ type: getRandomType(Request.types) });
+
+      this.queue.enqueue(request);
+    })
   }
 
 
