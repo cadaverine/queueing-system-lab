@@ -11,6 +11,12 @@ canvas {
     display: grid;
 }
 
+.wrapper-buttons {
+    display: flex;
+}
+
 .button {
-    width: 110px;
+    display: flex;
+    justify-content: center;
+    width: 130px;
 }
