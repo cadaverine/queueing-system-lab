@@ -31,7 +31,7 @@ export default class Request extends Graphics {
     this.id = requestsNumber;
     this.type = initialOptions.type;
     this.isMoved = false;
-    this._served = false;
+    this._done = false;
 
     requestsNumber += 1;
   }
@@ -49,30 +49,36 @@ export default class Request extends Graphics {
   }
 
 
-  serve() {
-    if (this.loaderLine.width === 40) {
-      this.served = true;
+  async serve(value) {
+    if (this.loaderLine.width >= 40 || value === false) {
+      if (value === false) {
+
+        this.loaderLine
+          .clear()
+          .beginFill(0xff0000)
+          .drawRect(3, 17, 1, 4)
+          .endFill();
+      }
+
+      this._served = value === false ? false : true
+      this._done = true;
     } else {
       // hack
-      this.loaderLine.x -= 3;
-      this.loaderLine.width += 1;
+      if (this._servindTime == null) {
+        this._servindTime = Math.random() * 2
+      }
+
+      this.loaderLine.x -= 3 * this._servindTime;
+      this.loaderLine.width += this._servindTime;
     }
   }
-
 
   get served() {
     return this._served;
   }
 
-
-  set served(value) {
-    if (value === true) {
-      this.lineStyle(3, 0x16db3d, 11)
-    } else {
-      this.lineStyle(2, 0x777777, 10)
-    }
-
-    this._served = value;
+  get done() {
+    return this._done;
   }
 
 
@@ -97,7 +103,7 @@ export default class Request extends Graphics {
         backgroundColor = 0xFFFFFF;
     }
 
-    this
+    this.border = this
       .lineStyle(2, 0x777777, 10)
       .beginFill(backgroundColor)
       .drawRoundedRect(0, 0, 46, 24, 5)

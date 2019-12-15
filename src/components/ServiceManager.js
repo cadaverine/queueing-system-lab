@@ -132,10 +132,18 @@ export default class ServiceManager {
   _service(device, request) {
     if (!device.isInWork) {
       this._moveRequestToDevice(request, device);
-    } else if (!request.served){
+    } else if (!request.done){
+      if (Math.random() * 100 < 0.5) {
+        request.serve(false);
+      }
+
       request.serve();
     } else {
-      device.registerOperation('service', request.type);
+      if (request.served === true) {
+        device.registerOperation('service', request.type);
+      } else {
+        device.registerOperation('rejection', request.type);
+      }
       this._removeRequest(request);
     }
   }
@@ -184,6 +192,9 @@ export default class ServiceManager {
     device.isInWork = false
 
     this.services.delete(request);
-    request.destroy();
+
+    setTimeout(() => {
+      request.destroy();
+    }, 700)
   }
 }
